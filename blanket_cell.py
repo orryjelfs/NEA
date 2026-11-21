@@ -11,8 +11,14 @@ class BlanketCell:
     @property
     #returns the total macroscopic cross-section for the blanket cell when accessed
     def sigma_t(self):
-        return self.material.calculate_sigma_t()
+        sigma_t, _ = self.material.calculate_sigma_t()
+        return sigma_t
 
+    @property
+    #returns the macroscopic cross-section for tritium production when accessed
+    def sigma_tritium(self):
+        _, sigma_tritium = self.material.calculate_sigma_t()
+        return sigma_tritium
 
     def __repr__(self):
         #represents the BlanketCell object as a string

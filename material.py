@@ -21,7 +21,10 @@ class Material:
         sigma_t_li6 = li6_density * self.microscopic_cross_section_li6
         sigma_t_li7 = li7_density * self.microscopic_cross_section_li7
 
-        #calculate the total macroscopic cross-section for the blanket
-        sigma_t = sigma_t_be + sigma_t_li6 + sigma_t_li7
+        #calculate the total macroscopic cross-section for tritium
+        sigma_tritium = sigma_t_li6 + sigma_t_li7
 
-        return sigma_t
+        #calculate the total macroscopic cross-section for the blanket
+        sigma_t = sigma_t_be + sigma_tritium
+
+        return sigma_t, sigma_tritium

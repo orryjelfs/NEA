@@ -36,18 +36,14 @@ class PhysicsEngine:
                 cell.neutron_flux = current_flux
                 sigma_t = cell.sigma_t
                 #calculate how much flux leaves the cell
-                outgoing_flux = current_flux * math.exp(-sigma_t * cell.depth_x)
+                outgoing_flux = current_flux * math.exp((-1*sigma_t) * cell.depth_x)
                 #update the current flux for the next cell in the row
                 current_flux = outgoing_flux
 
+    def calculate_tritium_production(self, grid):
+        #calculates the tritium production rate (atoms/m^3s) for each cell
+        for row in grid:
+            for cell in row:
+                #production rate = flux * sigma_tritium
+                cell.tritium_production_rate = cell.neutron_flux * cell.sigma_tritium
 
-physics_engine = PhysicsEngine()
-
-grid = physics_engine.generate_blanket_grid(depth_m=1.2, height_m=2.5)
-print(grid)
-
-physics_engine.calculate_attenuation(grid)
-front_cell_flux = grid[0][0].neutron_flux
-back_cell_flux = grid[0][-1].neutron_flux
-print(f"Neutron flux at the front of the blanket: {front_cell_flux:.2e} neutrons/m^2/s")
-print(f"Neutron flux at the back of the blanket: {back_cell_flux:.2e} neutrons/m^2/s")
