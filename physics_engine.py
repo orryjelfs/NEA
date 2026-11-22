@@ -1,49 +1,74 @@
-from blanket_cell import BlanketCell
-from material import Material
 import math
+
+from blanket_cell import BlanketCell
+from coord import Coord
+from material import Material
+
+
 class PhysicsEngine:
+    def __init__(
+        self, incident_flux: float = 1.0e18, depth_m: float = 1.2, height_m: float = 1.2
+    ) -> None:
+        # store the incident neutron flux for the blanket simulation
+        self.incident_flux: float = incident_flux
+        self._generate_blanket_grid(depth_m, height_m)
 
-    def __init__(self, incident_flux = 1.0e18):
-        #store the incident neutron flux for the blanket simulation
-        self.incident_flux = incident_flux
-
-    def generate_blanket_grid(self, depth_m = 1.2, height_m = 2.5):
+    def _generate_blanket_grid(
+        self, depth_m: float = 1.2, height_m: float = 2.5
+    ) -> None:
         DEPTH_COLS = 50
         HEIGHT_ROWS = 50
 
         dx = depth_m / DEPTH_COLS
         dy = height_m / HEIGHT_ROWS
 
-        grid = []
+        self._grid: list[list[BlanketCell]] = []
         for row in range(HEIGHT_ROWS):
-            grid_row = []
-            y_pos = (row + 0.5) * dy #calculate the center position of the cell in the y-direction
+            grid_row: list[BlanketCell] = []
+            y_pos = (
+                row + 0.5
+            ) * dy  # calculate the center position of the cell in the y-direction
             for col in range(DEPTH_COLS):
-                x_pos = (col + 0.5) * dx #calculate the center position of the cell in the x-direction
-                cell = BlanketCell(depth_x=x_pos, height_y=y_pos, material= Material(li6_enrichment=0.0759, be_fraction=0.2))
+                x_pos = (
+                    col + 0.5
+                ) * dx  # calculate the center position of the cell in the x-direction
+                cell = BlanketCell(
+                    depth_x=x_pos,
+                    height_y=y_pos,
+                    material=Material(li6_enrichment=0.0759, be_fraction=0.2),
+                )
                 grid_row.append(cell)
-            grid.append(grid_row)
+            self._grid.append(grid_row)
 
-        return grid
+    def __repr__(self) -> str:
+        return repr(self._grid)
 
-    def calculate_attenuation(self, grid):
-        #calculate the attenuation of the neutron flux across the blanket grid
-        for row in grid:
-            #set the initial neutron flux for the first cell in each row
+    def calculate_attenuation(self) -> None:
+        # calculate the attenuation of the neutron flux across the blanket grid
+        for row in self._grid:
+            # set the initial neutron flux for the first cell in each row
             current_flux = self.incident_flux
             for cell in row:
-                #store incoming flux
+                # store incoming flux
                 cell.neutron_flux = current_flux
                 sigma_t = cell.sigma_t
-                #calculate how much flux leaves the cell
-                outgoing_flux = current_flux * math.exp((-1*sigma_t) * cell.depth_x)
-                #update the current flux for the next cell in the row
+                # calculate how much flux leaves the cell
+                outgoing_flux = current_flux * math.exp((-1 * sigma_t) * cell.depth_x)
+                # update the current flux for the next cell in the row
                 current_flux = outgoing_flux
 
-    def calculate_tritium_production(self, grid):
-        #calculates the tritium production rate (atoms/m^3s) for each cell
-        for row in grid:
+    def calculate_tritium_production(self) -> None:
+        # calculates the tritium production rate (atoms/m^3s) for each cell
+        for row in self._grid:
             for cell in row:
-                #production rate = flux * sigma_tritium
+                # production rate = flux * sigma_tritium
                 cell.tritium_production_rate = cell.neutron_flux * cell.sigma_tritium
 
+    def _cell(self, coord: Coord) -> BlanketCell:
+        return self._grid[coord.y][coord.x]
+
+    def neutron_flux(self, coord: Coord) -> float:
+        return self._cell(coord).neutron_flux
+
+    def tritium_production_rate(self, coord: Coord) -> float:
+        return self._cell(coord).tritium_production_rate
