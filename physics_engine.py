@@ -40,7 +40,7 @@ class PhysicsEngine:
                 grid_row.append(cell)
             self._grid.append(grid_row)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return repr(self._grid)
 
     def calculate_attenuation(self) -> None:
