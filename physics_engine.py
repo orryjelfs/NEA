@@ -1,5 +1,7 @@
+import math
+
 from blanket_cell import BlanketCell
-from grid import Grid
+from coord import Coord
 from material import Material
 
 
@@ -54,3 +56,19 @@ class PhysicsEngine:
                 outgoing_flux = current_flux * math.exp((-1 * sigma_t) * cell.depth_x)
                 # update the current flux for the next cell in the row
                 current_flux = outgoing_flux
+
+    def calculate_tritium_production(self) -> None:
+        # calculates the tritium production rate (atoms/m^3s) for each cell
+        for row in self._grid:
+            for cell in row:
+                # production rate = flux * sigma_tritium
+                cell.tritium_production_rate = cell.neutron_flux * cell.sigma_tritium
+
+    def _cell(self, coord: Coord) -> BlanketCell:
+        return self._grid[coord.y][coord.x]
+
+    def neutron_flux(self, coord: Coord) -> float:
+        return self._cell(coord).neutron_flux
+
+    def tritium_production_rate(self, coord: Coord) -> float:
+        return self._cell(coord).tritium_production_rate
