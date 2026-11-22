@@ -1,15 +1,18 @@
+from typing import ClassVar
+
+
 class Material:
-    def __init__(self, li6_enrichment, be_fraction):
-        self.li6_enrichment = li6_enrichment
-        self.be_fraction = be_fraction
+    def __init__(self, li6_enrichment: float, be_fraction: float) -> None:
+        self.li6_enrichment: float = li6_enrichment
+        self.be_fraction: float = be_fraction
 
     #class constants
-    atom_density = 4.6e28 #atoms/m^3
-    microscopic_cross_section_li6 = 940e-28 #m^2
-    microscopic_cross_section_li7 = 0.045e-28 #m^2
-    microscopic_cross_section_be = 0.5e-28 #m^2
+    atom_density: ClassVar[float] = 4.6e28 #atoms/m^3
+    microscopic_cross_section_li6: ClassVar[float] = 940e-28 #m^2
+    microscopic_cross_section_li7: ClassVar[float] = 0.045e-28 #m^2
+    microscopic_cross_section_be: ClassVar[float] = 0.5e-28 #m^2
 
-    def calculate_sigma_t(self):
+    def calculate_sigma_t(self) -> tuple[float, float]:
         #calculate the density of each material in the blanket
         be_density = self.atom_density * self.be_fraction
         remaining_density = self.atom_density * (1 - self.be_fraction)
