@@ -1,17 +1,13 @@
 class Material:
-    def __init__(self, li6_enrichment, be_fraction):
-        self.li6_enrichment = li6_enrichment
-        self.be_fraction = be_fraction
+    def __init__(self, li6_enrichment: float, be_fraction: float):
+        self.li6_enrichment: float = li6_enrichment
+        self.be_fraction: float = be_fraction
 
-    '''class constants'''
-    atom_density = 4.6e28 
-    '''atoms/m^3'''
-    microscopic_cross_section_li6 = 940e-28 
-    '''m^2'''
-    microscopic_cross_section_li7 = 0.045e-28 
-    '''m^2'''
-    microscopic_cross_section_be = 0.5e-28 
-    '''m^2'''
+    #class constants
+    atom_density: float = 4.6e28  #atoms/m^3
+    microscopic_cross_section_li6: float = 940e-28  #m^2
+    microscopic_cross_section_li7: float = 0.045e-28  #m^2
+    microscopic_cross_section_be: float = 0.5e-28  #m^2
 
     def calculate_sigma_t(self):
         '''calculate the density of each material in the blanket'''

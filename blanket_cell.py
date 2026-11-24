@@ -1,11 +1,14 @@
+from material import Material
+
+
 class BlanketCell:
     '''represents a single cell in the blanket grid'''
-    def __init__(self, depth_x, height_y, material):
-        self.depth_x = depth_x
-        self.height_y = height_y
-        self.material = material
+    def __init__(self, depth_x: float, height_y: float, material: Material):
+        self.depth_x: float = depth_x
+        self.height_y: float = height_y
+        self.material: Material = material
 
-        self.neutron_flux = 0.0
+        self.neutron_flux: float = 0.0
         self.tritium_production_rate = 0.0
 
     @property
